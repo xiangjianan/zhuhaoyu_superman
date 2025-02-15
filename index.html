@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朱皓瑀超厉害</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2em;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        #inputBox {
+            padding: 10px;
+            font-size: 1em;
+        }
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+        }
+        #closeButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #409EFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #closeButton:hover {
+            background-color: rgb(121.3, 187.1, 255);
+        }
+        #extraText {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="inputBox" placeholder="输入内容后按回车">
+    <div id="overlay">
+        <div id="dots" class="fade-in"></div>
+        <div id="extraText" class="fade-in"></div>
+        <button id="closeButton" style="display: none;">再见，皓瑀</button>
+    </div>
+
+    <script>
+        const inputBox = document.getElementById('inputBox');
+        const overlay = document.getElementById('overlay');
+        const dotsDiv = document.getElementById('dots');
+        const extraTextDiv = document.getElementById('extraText');
+        const closeButton = document.getElementById('closeButton');
+
+        // 从localStorage获取输入次数，如果没有则初始化为0
+        let clickCount = 0;
+
+        inputBox.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const inputValue = inputBox.value.trim();
+                console.log(inputValue.indexOf('皓瑀'));
+                console.log(inputValue.indexOf('厉害'));
+                
+                if (inputValue.indexOf('皓瑀') > -1 && inputValue.indexOf('厉害') > -1) {
+                    clickCount++;
+                    localStorage.setItem('clickCount', clickCount); // 更新次数
+                    showOverlay(clickCount);
+                    inputBox.value = ''; // 清空输入框
+                }
+            }
+        });
+
+        function showOverlay(count) {
+            if (count >= 4) {
+                // 第四次及以后不再显示图层
+                return;
+            }
+
+            // 清除之前的文字
+            dotsDiv.textContent = '';
+            extraTextDiv.textContent = '';
+            dotsDiv.classList.remove('visible');
+            extraTextDiv.classList.remove('visible');
+            closeButton.style.display = 'none';
+
+            // 根据次数生成点
+            let dots = '';
+            for (let i = 0; i < count * 6; i++) {
+                dots += '.';
+            }
+
+            // 显示点
+            dotsDiv.textContent = dots;
+            dotsDiv.classList.add('visible');
+            overlay.style.opacity = 1; // 显示图层
+            overlay.style.pointerEvents = 'auto'; // 允许交互
+
+            if (count === 3) {
+                // 第三次：一秒钟后追加文字
+                setTimeout(() => {
+                    extraTextDiv.innerHTML = `好吧，没想到你也如此崇拜朱皓瑀<br>朱皓瑀是我的同事，听说他最近要离职了<br>原本以为能和他并肩作战更久一些……<br>“既然你已经决定踏上新的旅途，我也只能目送你的背影。<br>你定会在新的地方大放异彩，去吧，去创造更多令人惊叹的成就。<br>但是别忘了，这里永远有你的朋友们在......”<br>—— 项佳男 && 5031`;
+                    extraTextDiv.classList.add('visible');
+                    closeButton.style.display = 'block'; // 显示关闭按钮
+                }, 1200);
+            }
+
+            if (count === 1 || count === 2) {
+                // 第一次和第二次：一秒钟后消失
+                setTimeout(() => {
+                    overlay.style.opacity = 0; // 淡出
+                    setTimeout(() => {
+                        overlay.style.pointerEvents = 'none'; // 禁用交互
+                    }, 500); // 等待淡出动画完成
+                }, 1200);
+            } else if (count === 3) {
+                // 第三次：点击关闭按钮后消失
+                closeButton.addEventListener('click', () => {
+                    overlay.style.opacity = 0; // 淡出
+                    setTimeout(() => {
+                        overlay.style.pointerEvents = 'none'; // 禁用交互
+                    }, 500); // 等待淡出动画完成
+                }, { once: true });
+            }
+        }
+    </script>
+</body>
+</html>
